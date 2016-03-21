@@ -713,6 +713,8 @@ void DumpHfImage::create_image()
     int checkx, checky, checkz;	  
     int n1[3], n2[3], n3[3], n4[3] ;
 
+    double lattice_mag = 0.5;
+
     
     m = 0;
     
@@ -725,9 +727,9 @@ void DumpHfImage::create_image()
 	    color = image->color2rgb("green");
 	  }
 	  boxcolor= image->color2rgb("red");
-   	  checkx = (fmod(x0[channel_atomi][0],1)==0.5);
-	  checky = (fmod(x0[channel_atomi][1],1)==0.5);
-	  checkz = (fmod(x0[channel_atomi][2],1)==0.5);
+   	  checkx = (fmod(x0[channel_atomi][0],1*lattice_mag)==0.5*lattice_mag);
+	  checky = (fmod(x0[channel_atomi][1],1*lattice_mag)==0.5*lattice_mag);
+	  checkz = (fmod(x0[channel_atomi][2],1*lattice_mag)==0.5*lattice_mag);
 
 	  if (checkx ==1) {
 	    delx=1; dely=0; delz=0;
