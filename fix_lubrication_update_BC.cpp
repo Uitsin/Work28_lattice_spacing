@@ -30,6 +30,8 @@
 #include "memory.h"
 #include "neighbor.h"
 #include "types.h"
+#include "domain.h"
+#include "lattice.h" 
 #define TINY  1.e-3 ;
 #define  FAKE_INT_VALUE -991;
 using namespace LAMMPS_NS;
@@ -41,7 +43,7 @@ using namespace FixConst;
 FixLubricationUpdateBC::FixLubricationUpdateBC(LAMMPS *lmp, int narg, char **arg) :
   Fix(lmp, narg, arg)
 {
-  if (narg < 11) error->all(FLERR,"Illegal fix lubrication/update command"); // ID group-ID fixchannelini
+  if (narg < 10) error->all(FLERR,"Illegal fix lubrication/update command"); // ID group-ID fixchannelini
 
   BC_xlo = atof(arg[3]);
   BC_xhi = atof(arg[4]);
@@ -53,8 +55,6 @@ FixLubricationUpdateBC::FixLubricationUpdateBC(LAMMPS *lmp, int narg, char **arg
   BC_zhi = atof(arg[8]);
 
   vij_max = atof(arg[9]);
-
-  lat_spacing = atof(arg[10]);
 
   partner = NULL;
   nmax =0;
@@ -211,9 +211,9 @@ void FixLubricationUpdateBC::lubrication(){
   double local_w;
   double on_twelve_mu_L;
   double **v = atom->v;
-  double L = lat_spacing; 
+  double L = domain->lattice->xlattice; 
   double vil; 
-  double mu = 0.125e-3; //Pa.s
+  double mu = 0.001; //Pa.s
   int channel_atomi, channel_atomj;
   int *num_bond_channel_atom = atom ->num_bond_channel_atom;
   int **bond_channel_atom = atom->bond_channel_atom;

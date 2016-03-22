@@ -32,6 +32,7 @@
 #include "neighbor.h"
 #include "memory.h"
 #include "domain.h"
+#include "lattice.h"
 #define TINY  1.e-3 ;
 #define FAKE_INT_VALUE  -991 ;
 
@@ -75,7 +76,7 @@ void BondChannelChannel::command(int narg, char **arg)
   int ii;
   int max_bond_num;
 
-  double  lattice_mag = 0.5;
+  double  lattice_spacing = domain->lattice->xlattice;  // It's correct only for cubic lattice, xlattice = ylattice = zlattice
 
 
   partner0 = NULL;
@@ -168,9 +169,9 @@ void BondChannelChannel::command(int narg, char **arg)
       yj = x0[channel_atomj][1];
       zj = x0[channel_atomj][2];
       
-      if ( fabs(fmod(xi,1.0*lattice_mag)-0.5*lattice_mag) < 1.e-6) {Ctype = 1;}
-      else if ( fabs(fmod(yi,1.0*lattice_mag)-0.5*lattice_mag) < 1.e-6) {Ctype = 2;}
-      else if ( fabs(fmod(zi,1.0*lattice_mag)-0.5*lattice_mag) < 1.e-6) {Ctype = 3;}
+      if ( fabs(fmod(xi,1.0*lattice_spacing)-0.5*lattice_spacing) < 1.e-6) {Ctype = 1;}
+      else if ( fabs(fmod(yi,1.0*lattice_spacing)-0.5*lattice_spacing) < 1.e-6) {Ctype = 2;}
+      else if ( fabs(fmod(zi,1.0*lattice_spacing)-0.5*lattice_spacing) < 1.e-6) {Ctype = 3;}
       else {Ctype = -FAKE_INT_VALUE; fprintf(screen, "Something Wrong!!!\n");}
 
       cond0=0; cond1=0; cond2=0; cond3=0; cond4=0; cond5=0;
@@ -180,58 +181,58 @@ void BondChannelChannel::command(int narg, char **arg)
       
       if (Ctype ==1){
 	if ( fabs(zj -zi) < 1.e-6) {
-	  cond0 = ( (fabs(xj - xi)<1.e-6) && (fabs(yj - (yi - 1.0*lattice_mag)) < 1.e-6) );  // first neighbor 
-	  cond1 = ( (fabs(xj - xi)<1.e-6) && (fabs(yj - (yi + 1.0*lattice_mag)) < 1.e-6) );  // second neighbor 
-	  cond2 = ( (fabs(xj - (xi - 0.5*lattice_mag) )<1.e-6) && (fabs(yj - (yi - 0.5*lattice_mag) ) < 1.e-6) );
-	  cond3 = ( (fabs(xj - (xi - 0.5*lattice_mag) )<1.e-6) && (fabs(yj - (yi + 0.5*lattice_mag) ) < 1.e-6) );
-	  cond4 = ( (fabs(xj - (xi + 0.5*lattice_mag) )<1.e-6) && (fabs(yj - (yi - 0.5*lattice_mag) ) < 1.e-6) );
-	  cond5 = ( (fabs(xj - (xi + 0.5*lattice_mag) )<1.e-6) && (fabs(yj - (yi + 0.5*lattice_mag) ) < 1.e-6) );
+	  cond0 = ( (fabs(xj - xi)<1.e-6) && (fabs(yj - (yi - 1.0*lattice_spacing)) < 1.e-6) );  // first neighbor 
+	  cond1 = ( (fabs(xj - xi)<1.e-6) && (fabs(yj - (yi + 1.0*lattice_spacing)) < 1.e-6) );  // second neighbor 
+	  cond2 = ( (fabs(xj - (xi - 0.5*lattice_spacing) )<1.e-6) && (fabs(yj - (yi - 0.5*lattice_spacing) ) < 1.e-6) );
+	  cond3 = ( (fabs(xj - (xi - 0.5*lattice_spacing) )<1.e-6) && (fabs(yj - (yi + 0.5*lattice_spacing) ) < 1.e-6) );
+	  cond4 = ( (fabs(xj - (xi + 0.5*lattice_spacing) )<1.e-6) && (fabs(yj - (yi - 0.5*lattice_spacing) ) < 1.e-6) );
+	  cond5 = ( (fabs(xj - (xi + 0.5*lattice_spacing) )<1.e-6) && (fabs(yj - (yi + 0.5*lattice_spacing) ) < 1.e-6) );
 	}
 	if ( fabs(yj -yi) < 1.e-6) {
-	  cond6 = ( (fabs(xj - xi)<1.e-6) && (fabs(zj - (zi - 1.0*lattice_mag)) < 1.e-6) ); 
-	  cond7 = ( (fabs(xj - xi)<1.e-6) && (fabs(zj - (zi + 1.0*lattice_mag)) < 1.e-6) ); 
-	  cond8 = ( (fabs(xj - (xi - 0.5*lattice_mag) )<1.e-6) && (fabs(zj - (zi - 0.5*lattice_mag) ) < 1.e-6) );
-	  cond9 = ( (fabs(xj - (xi - 0.5*lattice_mag) )<1.e-6) && (fabs(zj - (zi + 0.5*lattice_mag) ) < 1.e-6) );
-	  cond10 = ( (fabs(xj - (xi + 0.5*lattice_mag) )<1.e-6) && (fabs(zj - (zi - 0.5*lattice_mag) ) < 1.e-6) );
-	  cond11 = ( (fabs(xj - (xi + 0.5*lattice_mag) )<1.e-6) && (fabs(zj - (zi + 0.5*lattice_mag) ) < 1.e-6) );
+	  cond6 = ( (fabs(xj - xi)<1.e-6) && (fabs(zj - (zi - 1.0*lattice_spacing)) < 1.e-6) ); 
+	  cond7 = ( (fabs(xj - xi)<1.e-6) && (fabs(zj - (zi + 1.0*lattice_spacing)) < 1.e-6) ); 
+	  cond8 = ( (fabs(xj - (xi - 0.5*lattice_spacing) )<1.e-6) && (fabs(zj - (zi - 0.5*lattice_spacing) ) < 1.e-6) );
+	  cond9 = ( (fabs(xj - (xi - 0.5*lattice_spacing) )<1.e-6) && (fabs(zj - (zi + 0.5*lattice_spacing) ) < 1.e-6) );
+	  cond10 = ( (fabs(xj - (xi + 0.5*lattice_spacing) )<1.e-6) && (fabs(zj - (zi - 0.5*lattice_spacing) ) < 1.e-6) );
+	  cond11 = ( (fabs(xj - (xi + 0.5*lattice_spacing) )<1.e-6) && (fabs(zj - (zi + 0.5*lattice_spacing) ) < 1.e-6) );
 	}
       }
       
       if (Ctype ==2){
 	if ( fabs(zj -zi) < 1.e-6 ) {
-	  cond0 = ( (fabs(xj - (xi -1.0*lattice_mag) )<1.e-6) && (fabs(yj - yi) < 1.e-6) );  // first neighbor 
-	  cond1 = ( (fabs(xj - (xi +1.0*lattice_mag) )<1.e-6) && (fabs(yj - yi) < 1.e-6) ); 
-	  cond2 = ( (fabs(xj - (xi - 0.5*lattice_mag) )<1.e-6) && (fabs(yj - (yi - 0.5*lattice_mag) ) < 1.e-6) );
-	  cond3 = ( (fabs(xj - (xi - 0.5*lattice_mag) )<1.e-6) && (fabs(yj - (yi + 0.5*lattice_mag) ) < 1.e-6) );
-	  cond4 = ( (fabs(xj - (xi + 0.5*lattice_mag) )<1.e-6) && (fabs(yj - (yi - 0.5*lattice_mag) ) < 1.e-6) );
-	  cond5 = ( (fabs(xj - (xi + 0.5*lattice_mag) )<1.e-6) && (fabs(yj - (yi + 0.5*lattice_mag) ) < 1.e-6) );
+	  cond0 = ( (fabs(xj - (xi -1.0*lattice_spacing) )<1.e-6) && (fabs(yj - yi) < 1.e-6) );  // first neighbor 
+	  cond1 = ( (fabs(xj - (xi +1.0*lattice_spacing) )<1.e-6) && (fabs(yj - yi) < 1.e-6) ); 
+	  cond2 = ( (fabs(xj - (xi - 0.5*lattice_spacing) )<1.e-6) && (fabs(yj - (yi - 0.5*lattice_spacing) ) < 1.e-6) );
+	  cond3 = ( (fabs(xj - (xi - 0.5*lattice_spacing) )<1.e-6) && (fabs(yj - (yi + 0.5*lattice_spacing) ) < 1.e-6) );
+	  cond4 = ( (fabs(xj - (xi + 0.5*lattice_spacing) )<1.e-6) && (fabs(yj - (yi - 0.5*lattice_spacing) ) < 1.e-6) );
+	  cond5 = ( (fabs(xj - (xi + 0.5*lattice_spacing) )<1.e-6) && (fabs(yj - (yi + 0.5*lattice_spacing) ) < 1.e-6) );
 	}
 	if ( fabs(xj -xi) < 1.e-6) {
-	  cond6 = ( (fabs(yj - yi)<1.e-6) && (fabs(zj - (zi - 1.0*lattice_mag) ) < 1.e-6) ); 
-	  cond7 = ( (fabs(yj - yi)<1.e-6) && (fabs(zj - (zi + 1.0*lattice_mag) ) < 1.e-6) ); 
-	  cond8 = ( (fabs(yj - (yi - 0.5*lattice_mag) )<1.e-6) && (fabs(zj - (zi - 0.5*lattice_mag) ) < 1.e-6) );
-	  cond9 = ( (fabs(yj - (yi - 0.5*lattice_mag) )<1.e-6) && (fabs(zj - (zi + 0.5*lattice_mag) ) < 1.e-6) );
-	  cond10 = ( (fabs(yj - (yi + 0.5*lattice_mag) )<1.e-6) && (fabs(zj - (zi - 0.5*lattice_mag) ) < 1.e-6) );
-	  cond11 = ( (fabs(yj - (yi + 0.5*lattice_mag) )<1.e-6) && (fabs(zj - (zi + 0.5*lattice_mag) ) < 1.e-6) );
+	  cond6 = ( (fabs(yj - yi)<1.e-6) && (fabs(zj - (zi - 1.0*lattice_spacing) ) < 1.e-6) ); 
+	  cond7 = ( (fabs(yj - yi)<1.e-6) && (fabs(zj - (zi + 1.0*lattice_spacing) ) < 1.e-6) ); 
+	  cond8 = ( (fabs(yj - (yi - 0.5*lattice_spacing) )<1.e-6) && (fabs(zj - (zi - 0.5*lattice_spacing) ) < 1.e-6) );
+	  cond9 = ( (fabs(yj - (yi - 0.5*lattice_spacing) )<1.e-6) && (fabs(zj - (zi + 0.5*lattice_spacing) ) < 1.e-6) );
+	  cond10 = ( (fabs(yj - (yi + 0.5*lattice_spacing) )<1.e-6) && (fabs(zj - (zi - 0.5*lattice_spacing) ) < 1.e-6) );
+	  cond11 = ( (fabs(yj - (yi + 0.5*lattice_spacing) )<1.e-6) && (fabs(zj - (zi + 0.5*lattice_spacing) ) < 1.e-6) );
 	}
       }
 
       if (Ctype ==3){
 	if ( fabs(xj -xi) < 1.e-6) {
-	  cond0 = ( (fabs(yj - (yi -1.0*lattice_mag) )<1.e-6) && (fabs(zj - zi) < 1.e-6) );  // first neighbor 
-	  cond1 = ( (fabs(yj - (yi +1.0*lattice_mag) )<1.e-6) && (fabs(zj - zi) < 1.e-6) ); 
-	  cond2 = ( (fabs(yj - (yi - 0.5*lattice_mag) )<1.e-6) && (fabs(zj - (zi - 0.5*lattice_mag) ) < 1.e-6) );
-	  cond3 = ( (fabs(yj - (yi - 0.5*lattice_mag) )<1.e-6) && (fabs(zj - (zi + 0.5*lattice_mag) ) < 1.e-6) );
-	  cond4 = ( (fabs(yj - (yi + 0.5*lattice_mag) )<1.e-6) && (fabs(zj - (zi - 0.5*lattice_mag) ) < 1.e-6) );
-	  cond5 = ( (fabs(yj - (yi + 0.5*lattice_mag) )<1.e-6) && (fabs(zj - (zi + 0.5*lattice_mag) ) < 1.e-6) );
+	  cond0 = ( (fabs(yj - (yi -1.0*lattice_spacing) )<1.e-6) && (fabs(zj - zi) < 1.e-6) );  // first neighbor 
+	  cond1 = ( (fabs(yj - (yi +1.0*lattice_spacing) )<1.e-6) && (fabs(zj - zi) < 1.e-6) ); 
+	  cond2 = ( (fabs(yj - (yi - 0.5*lattice_spacing) )<1.e-6) && (fabs(zj - (zi - 0.5*lattice_spacing) ) < 1.e-6) );
+	  cond3 = ( (fabs(yj - (yi - 0.5*lattice_spacing) )<1.e-6) && (fabs(zj - (zi + 0.5*lattice_spacing) ) < 1.e-6) );
+	  cond4 = ( (fabs(yj - (yi + 0.5*lattice_spacing) )<1.e-6) && (fabs(zj - (zi - 0.5*lattice_spacing) ) < 1.e-6) );
+	  cond5 = ( (fabs(yj - (yi + 0.5*lattice_spacing) )<1.e-6) && (fabs(zj - (zi + 0.5*lattice_spacing) ) < 1.e-6) );
 	}
 	if ( fabs(yj -yi) < 1.e-6) {
-	  cond6 = ( (fabs(xj - (xi -1.0*lattice_mag) )<1.e-6) && (fabs(zj - zi) < 1.e-6) );  // first neighbor 
-	  cond7 = ( (fabs(xj - (xi +1.0*lattice_mag) )<1.e-6) && (fabs(zj - zi) < 1.e-6) ); 
-	  cond8 = ( (fabs(xj - (xi - 0.5*lattice_mag) )<1.e-6) && (fabs(zj - (zi - 0.5*lattice_mag) ) < 1.e-6) );
-	  cond9 = ( (fabs(xj - (xi - 0.5*lattice_mag) )<1.e-6) && (fabs(zj - (zi + 0.5*lattice_mag) ) < 1.e-6) );
-	  cond10 = ( (fabs(xj - (xi + 0.5*lattice_mag) )<1.e-6) && (fabs(zj - (zi - 0.5*lattice_mag) ) < 1.e-6) );
-	  cond11 = ( (fabs(xj - (xi + 0.5*lattice_mag) )<1.e-6) && (fabs(zj - (zi + 0.5*lattice_mag) ) < 1.e-6) );
+	  cond6 = ( (fabs(xj - (xi -1.0*lattice_spacing) )<1.e-6) && (fabs(zj - zi) < 1.e-6) );  // first neighbor 
+	  cond7 = ( (fabs(xj - (xi +1.0*lattice_spacing) )<1.e-6) && (fabs(zj - zi) < 1.e-6) ); 
+	  cond8 = ( (fabs(xj - (xi - 0.5*lattice_spacing) )<1.e-6) && (fabs(zj - (zi - 0.5*lattice_spacing) ) < 1.e-6) );
+	  cond9 = ( (fabs(xj - (xi - 0.5*lattice_spacing) )<1.e-6) && (fabs(zj - (zi + 0.5*lattice_spacing) ) < 1.e-6) );
+	  cond10 = ( (fabs(xj - (xi + 0.5*lattice_spacing) )<1.e-6) && (fabs(zj - (zi - 0.5*lattice_spacing) ) < 1.e-6) );
+	  cond11 = ( (fabs(xj - (xi + 0.5*lattice_spacing) )<1.e-6) && (fabs(zj - (zi + 0.5*lattice_spacing) ) < 1.e-6) );
 	}
       }
 

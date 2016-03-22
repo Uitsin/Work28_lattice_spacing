@@ -27,6 +27,8 @@
 #include "update.h"
 #include "memory.h"
 #include "neighbor.h"
+#include "domain.h"
+#include "lattice.h"
 #include "types.h"
 #define TINY  1.e-3 ;
 using namespace LAMMPS_NS;
@@ -45,22 +47,25 @@ FixInjectionUpdate::FixInjectionUpdate(LAMMPS *lmp, int narg, char **arg) :
   injection_z = atof(arg[5]);
   injection_rate = atof(arg[6]);// bbl/min
 
+  double  lattice_spacing = domain->lattice->xlattice;  // It's correct only for cubic lattice, xlattice = ylattice = zlattice
 
   int check_injection_point;
   int check_x, check_y, check_z;
   check_injection_point = 0;
-  
-  check_x = (fmod(fabs(injection_x-0.5), 2.0) ==0); //and (flag_x == 1);
-  check_y = (fmod(fabs(injection_y-0.5), 2.0) ==0); //and (flag_y == 1);
-  check_z = (fmod(fabs(injection_z-0.5), 2.0) ==0); // and (flag_z == 1);
+
+/*  
+  check_x = (fmod(fabs(injection_x-0.5*lattice_spacing), 1.0*lattice_spacing) ==0); //and (flag_x == 1);
+  check_y = (fmod(fabs(injection_y-0.5*lattice_spacing), 1.0*lattice_spacing) ==0); //and (flag_y == 1);
+  check_z = (fmod(fabs(injection_z-0.5*lattice_spacing), 1.0*lattice_spacing) ==0); // and (flag_z == 1);
   if (check_x == 1 && check_y == 0 && check_z == 0){check_injection_point = 1;} 
   else if (check_x == 0 && check_y == 1 && check_z == 0){check_injection_point = 1;} 
   else if (check_x == 0 && check_y == 0 && check_z == 1){check_injection_point = 1;} 
   else{
-    fprintf(screen, "!! Wrong!!!The injection position is Wrong !!!!, make sure (x%2)=0.5 or (y%2)=0.5 or (z%2)=0.5 ");
-    error->one(FLERR,"!! Wrong!!!The injection position is Wrong !!!!, make sure (x%2)=0.5 or (y%2)=0.5 or (z%2)=0.5 ");
+    fprintf(screen, "x=%f , y=%f , z=%f \n check_x=%d, check_y=%d, check_z=%d \n", injection_x, injection_y, injection_z, fmod(fabs(injection_x-0.5*lattice_spacing), 1.0*lattice_spacing), fmod(fabs(injection_x-0.5*lattice_spacing), 1.0*lattice_spacing), fmod(fabs(injection_x-0.5*lattice_spacing), 1.0*lattice_spacing));
+    fprintf(screen, "!! Wrong!!!The injection position is Wrong !!!!, make sure (x%2)=0.5 or (y%2)=0.5 or (z%2)=0.5 (NOT APPLICABLE NOW)");
+    error->one(FLERR,"!! Wrong!!!The injection position is Wrong !!!!, make sure (x%2)=0.5 or (y%2)=0.5 or (z%2)=0.5 (NOT APPLICABLE NOW)");
   }
-
+*/
 
   /*
   double H =30;//  meter

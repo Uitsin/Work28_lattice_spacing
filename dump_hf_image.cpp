@@ -29,6 +29,8 @@
 #include "math_const.h"
 #include "error.h"
 #include "memory.h"
+#include "domain.h"
+#include "lattice.h"
 #include "types.h"
 
 using namespace LAMMPS_NS;
@@ -713,7 +715,7 @@ void DumpHfImage::create_image()
     int checkx, checky, checkz;	  
     int n1[3], n2[3], n3[3], n4[3] ;
 
-    double lattice_mag = 0.5;
+    double  lattice_spacing = domain->lattice->xlattice;  // It's correct only for cubic lattice, xlattice = ylattice = zlattice
 
     
     m = 0;
@@ -727,9 +729,9 @@ void DumpHfImage::create_image()
 	    color = image->color2rgb("green");
 	  }
 	  boxcolor= image->color2rgb("red");
-   	  checkx = (fmod(x0[channel_atomi][0],1*lattice_mag)==0.5*lattice_mag);
-	  checky = (fmod(x0[channel_atomi][1],1*lattice_mag)==0.5*lattice_mag);
-	  checkz = (fmod(x0[channel_atomi][2],1*lattice_mag)==0.5*lattice_mag);
+   	  checkx = (fmod(x0[channel_atomi][0],1*lattice_spacing)==0.5*lattice_spacing);
+	  checky = (fmod(x0[channel_atomi][1],1*lattice_spacing)==0.5*lattice_spacing);
+	  checkz = (fmod(x0[channel_atomi][2],1*lattice_spacing)==0.5*lattice_spacing);
 
 	  if (checkx ==1) {
 	    delx=1; dely=0; delz=0;

@@ -29,6 +29,8 @@
 #include "math_const.h"
 #include "error.h"
 #include "memory.h"
+#include "domain.h"
+#include "lattice.h"
 #include "types.h"
 
 using namespace LAMMPS_NS;
@@ -722,7 +724,7 @@ void DumpHfImage2::create_image()
     int check1[3];
     int ii;
 
-    double lattice_mag = 0.5;
+    double  lattice_spacing = domain->lattice->xlattice;  // It's correct only for cubic lattice, xlattice = ylattice = zlattice
     
     m = 0;
     
@@ -755,13 +757,13 @@ void DumpHfImage2::create_image()
 	      corner1[1] = x0[channel_atomj][1];
 	      corner1[2] = x0[channel_atomj][2];
 	      
-	      check0[0] = (fmod(corner0[0], 1.0*lattice_mag) == 0.5*lattice_mag);
-	      check0[1] = (fmod(corner0[1], 1.0*lattice_mag) == 0.5*lattice_mag);
-	      check0[2] = (fmod(corner0[2], 1.0*lattice_mag) == 0.5*lattice_mag);
+	      check0[0] = (fmod(corner0[0], 1.0*lattice_spacing) == 0.5*lattice_spacing);
+	      check0[1] = (fmod(corner0[1], 1.0*lattice_spacing) == 0.5*lattice_spacing);
+	      check0[2] = (fmod(corner0[2], 1.0*lattice_spacing) == 0.5*lattice_spacing);
 	      
-	      check1[0] = (fmod(corner1[0], 1.0*lattice_mag) == 0.5*lattice_mag);
-	      check1[1] = (fmod(corner1[1], 1.0*lattice_mag) == 0.5*lattice_mag);
-	      check1[2] = (fmod(corner1[2], 1.0*lattice_mag) == 0.5*lattice_mag);
+	      check1[0] = (fmod(corner1[0], 1.0*lattice_spacing) == 0.5*lattice_spacing);
+	      check1[1] = (fmod(corner1[1], 1.0*lattice_spacing) == 0.5*lattice_spacing);
+	      check1[2] = (fmod(corner1[2], 1.0*lattice_spacing) == 0.5*lattice_spacing);
 	      
 	      mid[0] = 0.5 * (corner0[0] + corner1[0]);
 	      mid[1] = 0.5 * (corner0[1] + corner1[1]);

@@ -395,7 +395,7 @@ void CreateHfAtoms::add_lattice()
 
   double bboxlo[3],bboxhi[3];
 
-  double  lattice_mag = 0.5;
+  double  lattice_spacing = domain->lattice->xlattice;  // It's correct only for cubic lattice, xlattice = ylattice = zlattice
 
   if (triclinic == 0) {
     bboxlo[0] = domain->sublo[0]; bboxhi[0] = domain->subhi[0];
@@ -464,9 +464,9 @@ void CreateHfAtoms::add_lattice()
 
   double i,j,k;
   int m;
-  for (k = klo; k <= khi; k = k + lattice_mag)
-    for (j = jlo; j <= jhi; j = j + lattice_mag)
-      for (i = ilo; i <= ihi; i = i + lattice_mag)
+  for (k = klo; k <= khi; k = k + lattice_spacing)
+    for (j = jlo; j <= jhi; j = j + lattice_spacing)
+      for (i = ilo; i <= ihi; i = i + lattice_spacing)
         for (m = 0; m < nbasis; m++) {
 
           x[0] = i + basis[m][0];
@@ -474,17 +474,17 @@ void CreateHfAtoms::add_lattice()
           x[2] = k + basis[m][2];
 	  //	  fprintf(screen, "basis basis[m][0], basis[m][1],basis[m][2] %f %f %f \n",basis[m][0],basis[m][1],basis[m][2]);
 
-	  y[0] = x[0] + 0.5*lattice_mag;
+	  y[0] = x[0] + 0.5*lattice_spacing;
 	  y[1] = x[1];
 	  y[2] = x[2];
 
 	  y2[0] = x[0];
-	  y2[1] = x[1] + 0.5*lattice_mag;
+	  y2[1] = x[1] + 0.5*lattice_spacing;
 	  y2[2] = x[2];
 	  
 	  y3[0] = x[0];
 	  y3[1] = x[1];
-	  y3[2] = x[2] + 0.5*lattice_mag;
+	  y3[2] = x[2] + 0.5*lattice_spacing;
 
           // convert from lattice coords to box coords
 
